@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import joblib
-
+import logging as log
 
 
 class Perceptron:
@@ -9,7 +9,7 @@ class Perceptron:
         self.weights = np.random.randn(3) * 1e-4  ### small random weights
         training = (eta is not None) and (epochs is not None)
         if training:
-            print(f"initial weights before training :  \n{self.weights}")
+            log.info(f"initial weights before training :  \n{self.weights}")
         self.eta = eta
         self.epochs = epochs
 
@@ -24,23 +24,23 @@ class Perceptron:
         self.y = y
 
         X_with_bias = np.c_[self.X, -np.ones((len(self.X), 1))]
-        print(f"X with bias :\n {X_with_bias}")
+        log.info(f"X with bias :\n {X_with_bias}")
 
         for epoch in range(self.epochs):
-            print("--" * 13)
-            print(f"for epoch >> {epoch + 1}")
-            print("--" * 13)
+            log.info("--" * 13)
+            log.info(f"for epoch >> {epoch + 1}")
+            log.info("--" * 13)
 
             z = self._z_outcome(X_with_bias, self.weights)
             y_hat = self.activation_function(z)
-            print(f"predicted value after forward pass : \n{y_hat}")
+            log.info(f"predicted value after forward pass : \n{y_hat}")
 
             self.error = self.y - y_hat
-            print(f"error : \n{self.error}")
+            log.info(f"error : \n{self.error}")
 
             self.weights = self.weights + self.eta * np.dot(X_with_bias.T, self.error)
-            print(f"updated weights after epoch : {epoch + 1}/{self.epochs}: \n {self.weights}")
-            print("##" * 13)
+            log.info(f"updated weights after epoch : {epoch + 1}/{self.epochs}: \n {self.weights}")
+            log.info("##" * 13)
 
     def prediction(self, test_inputs):
         X_with_bias = np.c_[test_inputs, -np.ones((len(test_inputs), 1))]
@@ -49,7 +49,7 @@ class Perceptron:
 
     def total_loss(self):
         total_loss = np.sum(self.error)
-        print(f"total loss : {total_loss}\n")
+        log.info(f"total loss : {total_loss}\n")
 
     def _create_dir_return_path(self, model_dir, filename):
         os.makedirs(model_dir, exist_ok=True)

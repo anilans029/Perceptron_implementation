@@ -1,17 +1,31 @@
 import pandas as pd
 from utils.model import Perceptron
 from utils.all_utils import prepare_data, save_plot
+import logging as log
+import os
+
+
+log_dir = "logs"
+gate = "or gate"
+os.makedirs(log_dir,exist_ok=True)
+log.basicConfig(filemode="a",
+                filename=os.path.join(log_dir,"running_log.log"),
+                level = log.INFO,
+                format = "[%(levelname)s --%(asctime)s --%(module)s] ===>  %(message)s"
+                )
+
 
 def main(data, modelname, plotname, eta, epochs):
-     df_OR = pd.DataFrame(data)
-     X, y = prepare_data(df_OR)
+     df = pd.DataFrame(data)
+     log.info(f"the rawdata is \n{df}")
+     X, y = prepare_data(df)
 
-     model_or = Perceptron(eta=eta, epochs=epochs)
-     model_or.fit(X, y)
-     _ = model_or.total_loss()
+     model = Perceptron(eta=eta, epochs=epochs)
+     model.fit(X, y)
+     _ = model.total_loss()
 
-     model_or.save(modelname)
-     save_plot(df_OR, model_or, fielname=plotname)
+     model.save(modelname)
+     save_plot(df, model, fielname=plotname)
 if __name__ == "__main__":
     OR = {
         "X1": [0,0,1,1],
@@ -20,7 +34,10 @@ if __name__ == "__main__":
     }
     ETA = 0.1
     EPOCHs = 10
-    main(data = OR,modelname = "or.model", plotname = "or.png", eta = ETA, epochs= EPOCHs)
-
-
-
+    try:
+        log.info(f"<<<<< starting of the training {gate} >>>>>>")
+        main(data = OR,modelname = "or.model", plotname = "or.png", eta = ETA, epochs= EPOCHs)
+        log.info(f">>>>>> ending of the training {gate} <<<<<<<< \n\n\n")
+    except Exception as e:
+        log.exception(e)
+        raise e
