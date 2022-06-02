@@ -16,16 +16,26 @@ log.basicConfig(filemode="a",
 
 
 def main(data, modelname, plotname, eta, epochs):
-     df = pd.DataFrame(data)
-     log.info(f"the rawdata is \n{df}")
-     X, y = prepare_data(df)
+    """
+    This function takes in a data set, a model name, a plot name, a learning rate, and the number of epochs to train for,
+    and then trains a model on the data set, plots the loss, and saves the model.
 
-     model = Perceptron(eta=eta, epochs=epochs)
-     model.fit(X, y)
-     _ = model.total_loss()
+    :param data: the data file
+    :param modelname: the name of the model you want to train
+    :param plotname: the name of the plot that will be saved
+    :param eta: learning rate
+    :param epochs: number of epochs to train the model
+    """
+    df = pd.DataFrame(data)
+    log.info(f"the rawdata is \n{df}")
+    X, y = prepare_data(df)
 
-     model.save(modelname)
-     save_plot(df, model, fielname=plotname)
+    model = Perceptron(eta=eta, epochs=epochs)
+    model.fit(X, y)
+    _ = model.total_loss()
+
+    model.save(modelname)
+    save_plot(df, model, fielname=plotname)
 if __name__ == "__main__":
     OR = {
         "X1": [0,0,1,1],
